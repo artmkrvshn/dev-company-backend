@@ -1,6 +1,8 @@
 package com.dev.company.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +28,8 @@ public class Project {
     @Column(name = "id")
     private UUID id;
 
+    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 chars")
+    @NotBlank(message = "Name should not be blank")
     @Column(name = "name")
     private String name;
 
@@ -39,12 +43,12 @@ public class Project {
     @JoinColumn(name = "status_id")
     private Status status;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "employee_id", table = "project_chief")
     private Employee chief;
 
     @Builder.Default
-    @ManyToMany(cascade = {CascadeType.ALL, CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(name = "project_employees",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "employee_id"))

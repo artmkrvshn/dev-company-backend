@@ -1,4 +1,4 @@
-package com.dev.company.util.converters;
+package com.dev.company.util;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort;

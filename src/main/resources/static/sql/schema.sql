@@ -71,13 +71,6 @@ BEGIN
     END IF;
 END;
 
-CALL check_single_chief('5e35f96c-3506-4a2d-ae06-76ffab496a11',
-                        '19aeb790-a670-11ee-a5d5-7c4d8f99b314');
-
-select *
-from project_employees
-where project_id = uuid_to_bin('5e35f96c-3506-4a2d-ae06-76ffab496a11');
-
 DROP TRIGGER IF EXISTS project_chief_insert;
 CREATE TRIGGER project_chief_insert
     BEFORE INSERT

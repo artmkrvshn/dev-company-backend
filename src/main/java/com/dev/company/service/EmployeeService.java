@@ -49,6 +49,7 @@ public class EmployeeService {
         if (!repository.existsById(employeeId)) {
             throw new EmployeeNotFoundException("An employee with this ID doesn't exist.");
         }
+        employee.setId(employeeId);
         repository.save(employee);
     }
 

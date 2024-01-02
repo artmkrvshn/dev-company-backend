@@ -1,11 +1,13 @@
 package com.dev.company.service;
 
 import com.dev.company.aspect.TrackExecutionTime;
+import com.dev.company.entity.Employee;
 import com.dev.company.entity.Project;
 import com.dev.company.exception.project.ProjectAlreadyExistsException;
 import com.dev.company.exception.project.ProjectNotFoundException;
-import com.dev.company.repository.EmployeeRepository;
 import com.dev.company.repository.ProjectRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,12 +23,13 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class ProjectService {
 
+    @PersistenceContext
+    private final EntityManager entityManager;
     private final ProjectRepository repository;
-    private final EmployeeRepository employeeRepository;
 
-    public ProjectService(ProjectRepository repository, EmployeeRepository employeeRepository) {
+    public ProjectService(EntityManager entityManager, ProjectRepository repository) {
+        this.entityManager = entityManager;
         this.repository = repository;
-        this.employeeRepository = employeeRepository;
     }
 
     @Transactional
@@ -56,12 +59,16 @@ public class ProjectService {
         if (!repository.existsById(projectId)) {
             throw new ProjectNotFoundException("A project with this ID doesn't exist.");
         }
-//        if (repository.existsByName(project.getName())) {
-//            throw new ProjectAlreadyExistsException("A project with this name already exists.");
-//        }
-//        employeeRepository.saveAll(project.getEmployees());
+        if (repository.existsByName(project.getName())) {
+            throw new ProjectAlreadyExistsException("A project with this name already exists.");
+        }
+        // save employees first, then chief
         project.setId(projectId);
-        repository.save(project);
+        Employee chief = project.getChief();
+        project.setChief(null);
+        Project savedProject = entityManager.merge(project);
+        entityManager.flush();
+        savedProject.setChief(chief);
     }
 
     @Transactional
