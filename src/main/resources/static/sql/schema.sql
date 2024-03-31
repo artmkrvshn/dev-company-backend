@@ -124,7 +124,7 @@ BEGIN
     RETURN employee_count > 0;
 END;
 
-DROP PROCEDURE password_encrypt;
+DROP PROCEDURE IF EXISTS password_encrypt;
 CREATE PROCEDURE password_encrypt(IN enc_key varchar(20))
 BEGIN
     UPDATE employee e
@@ -133,7 +133,9 @@ END;
 
 CALL password_encrypt('ENC_KEY');
 
-DROP PROCEDURE password_decrypt;
+
+
+DROP PROCEDURE IF EXISTS password_decrypt;
 CREATE PROCEDURE password_decrypt(IN enc_key VARCHAR(20))
 BEGIN
     UPDATE employee

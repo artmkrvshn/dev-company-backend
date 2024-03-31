@@ -1,0 +1,26 @@
+services:
+  dev-company-api:
+    build: .
+    container_name: dev-company-api
+    image: dev-company-api:latest
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_USER=user'
+      - 'MYSQL_PASSWORD=admin'
+      - 'MYSQL_ROOT_PASSWORD=admin'
+      - 'MYSQL_DATABASE=dev-company'
+
+    ports:
+      - '3306:3306'
+    volumes:
+      - dev-company-db:/var/lib/mysql
+
+volumes:
+  dev-company-db:
+    name: my-sql-database-2

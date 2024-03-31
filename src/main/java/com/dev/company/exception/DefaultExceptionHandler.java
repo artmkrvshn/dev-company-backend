@@ -9,7 +9,6 @@ import com.dev.company.exception.project.ProjectAlreadyExistsException;
 import com.dev.company.exception.project.ProjectNotFoundException;
 import com.dev.company.exception.status.StatusAlreadyExistsException;
 import com.dev.company.exception.status.StatusNotFoundException;
-import com.mysql.cj.jdbc.exceptions.SQLError;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
