@@ -1,47 +1,32 @@
-#FROM eclipse-temurin:21-alpine
-#
+#FROM eclipse-temurin:21-jdk-alpine
 #WORKDIR /dev-company
-#CMD ["./gradlew", "clean", "bootJar"]
 #COPY build/libs/*.jar app.jar
-#
 #EXPOSE 8080
 #ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
-FROM eclipse-temurin:21-alpine
-WORKDIR /dev-company
-#COPY gradle gradle/
-COPY . .
-RUN chmod +x gradlew
-RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -i clean bootJar
-COPY /build/libs/*.jar app.jar
-EXPOSE 8080
 
-CMD /bin/sh
+FROM eclipse-temurin:21-jdk-alpine as BUILDER
+WORKDIR /dev-company
+COPY gradle ./gradle
+COPY src ./src
+COPY gradlew build.gradle settings.gradle ./
+RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -i clean bootJar
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /dev-company
+COPY --from=BUILDER /dev-company/build/libs/*.jar app.jar
+EXPOSE 8080
+CMD ["echo", "test"]
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
 
-#COPY target/ docker-message-server-1.0.0.jar message-server-1.0.0.jar
-#ENTRYPOINT ["java","-jar","/message-server-1.0.0.jar"]
-#ENTRYPOINT ["top", "-b"]
-
-#ADD target/app.jar app.jar
+#FROM eclipse-temurin:21-alpine
+#WORKDIR /dev-company
+#COPY gradle ./gradle
+#COPY src ./src
+#COPY gradlew build.gradle settings.gradle ./
+#RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -i clean bootJar
 #EXPOSE 8080
-#ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
-#COPY src /home/app/src
-#COPY pom.xml /home/app
-#RUN mvn -f /home/app/pom.xml clean package
-#EXPOSE 8080
-#ENTRYPOINT ["java","-jar","/home/app/target/spring_rest_docker.jar"]
-#
-#
-#FROM maven:3.8.5-openjdk-17
-#
-#WORKDIR /bezkoder-app
-#COPY . .
-#RUN mvn clean install
-#
-#CMD mvn spring-boot:run
+#ENTRYPOINT ["java", "-jar", "build/libs/dev-company-0.0.1-SNAPSHOT.jar"]
