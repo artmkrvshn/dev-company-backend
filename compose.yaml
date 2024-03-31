@@ -2,14 +2,16 @@ services:
   dev-company-api:
     build: .
     container_name: dev-company-api
-    image: dev-company-api:latest
     ports:
       - '8080:8080'
     depends_on:
       - mysql
+    networks:
+      - spring-boot-mysql-network
 
   mysql:
     image: 'mysql:latest'
+    container_name: dev-company-mysql
     environment:
       - 'MYSQL_USER=user'
       - 'MYSQL_PASSWORD=admin'
@@ -20,7 +22,14 @@ services:
       - '3306:3306'
     volumes:
       - dev-company-db:/var/lib/mysql
+    networks:
+      - spring-boot-mysql-network
 
 volumes:
   dev-company-db:
     name: my-sql-database-2
+
+
+networks:
+  spring-boot-mysql-network:
+    driver: bridge

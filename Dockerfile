@@ -1,21 +1,24 @@
-FROM eclipse-temurin:21-alpine
-
-WORKDIR /dev-company
-CMD ["./gradlew", "clean", "bootJar"]
-COPY build/libs/*.jar app.jar
-
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
 #FROM eclipse-temurin:21-alpine
-#WORKDIR spring-app
-#COPY gradle gradle/
-#COPY . .
-#RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -i clean bootJar
+#
+#WORKDIR /dev-company
+#CMD ["./gradlew", "clean", "bootJar"]
 #COPY build/libs/*.jar app.jar
+#
 #EXPOSE 8080
 #ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+FROM eclipse-temurin:21-alpine
+WORKDIR /dev-company
+#COPY gradle gradle/
+COPY . .
+RUN chmod +x gradlew
+RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -i clean bootJar
+COPY /build/libs/*.jar app.jar
+EXPOSE 8080
+
+CMD /bin/sh
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
 

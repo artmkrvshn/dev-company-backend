@@ -61,7 +61,7 @@ CREATE TABLE project_chief
 );
 
 DROP PROCEDURE IF EXISTS check_single_chief;
-CREATE PROCEDURE check_single_chief(_project_id binary(16), _employee_id binary(16))
+CREATE PROCEDURE `check_single_chief`(_project_id binary(16), _employee_id binary(16))
 BEGIN
     IF NOT EXISTS(SELECT 1
                   FROM project_employees pe
@@ -145,15 +145,19 @@ END;
 CALL password_decrypt('ENC_KEY');
 
 
-CREATE USER 'database_admin'@'%' IDENTIFIED WITH mysql_native_password BY 'admin';
+DROP USER IF EXISTS database_admin;
+CREATE USER `database_admin`@'%' IDENTIFIED WITH mysql_native_password BY 'admin';
 GRANT Alter, Alter Routine, Create, Create Routine, Create Temporary Tables, Create User, Create View, Delete, Drop, Event, Execute, File, Grant Option, Index, Insert, Lock Tables, Process, References, Reload, Replication Client, Replication Slave, Select, Show Databases, Show View, Shutdown, Super, Trigger, Update ON *.* TO `database_admin`@`%`;
 
+DROP USER IF EXISTS database_employee;
 CREATE USER 'database_employee'@'%' IDENTIFIED BY 'employee';
 GRANT SELECT ON * TO 'database_employee'@'%';
 
-CREATE USER 'database_manager'@'%' IDENTIFIED BY 'manager';
-GRANT SELECT, INSERT, UPDATE, DELETE ON * TO 'manager'@'%';
+
+DROP USER IF EXISTS database_manager;
+CREATE USER `database_manager`@'%' IDENTIFIED BY 'manager';
+GRANT ALL ON * TO `database_manager`@`%`;
 
 SHOW GRANTS FOR database_admin;
-SHOW GRANTS FOR database_emsployee;
+SHOW GRANTS FOR database_employee;
 SHOW GRANTS FOR database_manager;
